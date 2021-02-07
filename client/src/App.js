@@ -16,7 +16,7 @@ export default function App() {
         .then((response) => {
           // Study this response with a breakpoint or log statements
           // and set the response data as the 'movieList' slice of state
-          console.log(response);
+          console.log("API response: ", response);
           setMovieList(response.data);
         })
         .catch((error) => {
@@ -28,21 +28,25 @@ export default function App() {
 
   const addToSavedList = (id) => {
     // This is stretch. Prevent the same movie from being "saved" more than once
+    const savedMovie = saved.find((movie) => {
+      return movie.id === id;
+    });
+    const nextMovie = movieList.find((movie) => {
+      return movie.id === id;
+    });
+    if (savedMovie) {
+      return alert("Movie has already been Saved.");
+    } else {
+      setSaved([...saved, nextMovie]);
+    }
   };
 
   return (
     <div>
-      <SavedList
-        list={
-          [
-            /* This is stretch */
-          ]
-        }
-      />
-
+      <SavedList list={saved} />
       <Switch>
         <Route path="/movies/:id">
-          <Movie movies={movieList} />
+          <Movie addToSavedList={addToSavedList} />
         </Route>
         <Route path="/">
           <MovieList movies={movieList} />
